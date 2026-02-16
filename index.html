@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة متفقون الاحترافية للاستقدام</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #004aad; /* أزرق عميق */
+            --secondary: #00c2ff; /* سماوي */
+            --bg: #f0f7ff; /* خلفية باردة */
+            --white: #ffffff;
+            --sidebar-width: 260px;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; overflow-x: hidden; }
+
+        /* القائمة الجانبية (Options) */
+        .sidebar {
+            position: fixed; right: -260px; top: 0; width: var(--sidebar-width); height: 100%;
+            background: var(--primary); color: white; transition: 0.3s; z-index: 1000; padding-top: 60px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+        }
+        .sidebar.active { right: 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar a:hover { background: var(--secondary); }
+
+        /* الهيدر (المكان المخصص للوجو) */
+        header {
+            background: var(--white); padding: 10px 5%; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 900;
+        }
+        .logo-area img { height: 50px; cursor: pointer; }
+
+        /* قسم محرك البحث */
+        .hero-search {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 60px 20px; text-align: center; color: white;
+        }
+        .search-box {
+            background: white; border-radius: 50px; padding: 10px 25px; display: flex;
+            max-width: 600px; margin: 20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .search-box input { border: none; flex: 1; outline: none; font-size: 16px; }
+        .search-box button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; }
+
+        /* شبكة العمالة */
+        .container { padding: 40px 5%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .worker-card {
+            background: white; border-radius: 20px; overflow: hidden; position: relative;
+            transition: 0.3s; border: 1px solid #e1e8ef;
+        }
+        .worker-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,74,173,0.1); }
+        .worker-card img { width: 100%; height: 350px; object-fit: cover; }
+        .worker-info { padding: 20px; text-align: center; }
+        .status-badge { position: absolute; top: 15px; left: 15px; background: #25d366; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; }
+
+        /* نموذج تسجيل الحساب (Login/Register) */
+        .auth-section { background: #e3f2fd; padding: 40px; border-radius: 20px; margin-top: 40px; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        .form-group input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+
+        /* خدمة العملاء */
+        .customer-service {
+            position: fixed; bottom: 20px; left: 20px; background: var(--secondary);
+            color: white; width: 60px; height: 60px; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .toggle-btn { font-size: 24px; cursor: pointer; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <a href="#"><i class="fas fa-home"></i> الرئيسية</a>
+    <a href="#"><i class="fas fa-user-plus"></i> تسجيل عاملة جديدة</a>
+    <a href="#"><i class="fas fa-database"></i> ذاكرة البيانات</a>
+    <a href="#"><i class="fas fa-cogs"></i> الإعدادات</a>
+    <a href="#" onclick="toggleSidebar()"><i class="fas fa-times"></i> إغلاق</a>
+</div>
+
+<header>
+    <div class="logo-area">
+        <img src="logo.png" alt="لوجو متفقون" onerror="this.src='https://via.placeholder.com/150x50?text=MUTEFIQUN'">
+    </div>
+    <div class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+</header>
+
+<section class="hero-search">
+    <h1>منظومة "متفقون" الذكية</h1>
+    <p>ابحث في أكبر قاعدة بيانات للعمالة المنزلية</p>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="ابحث بالكود، الجنسية، أو المهارة..." onkeyup="filterWorkers()">
+        <button><i class="fas fa-search"></i></button>
+    </div>
+</section>
+
+<div class="container">
+    <div class="grid" id="workerGrid">
+        <div class="worker-card">
+            <div class="status-badge">متاح</div>
+            <img src="worker1.jpg" alt="عاملة">
+            <div class="worker-info">
+                <h3>كود: MT-7001</h3>
+                <p>الجنسية: فلبينية | العمر: 28</p>
+                <div style="margin: 10px 0;">
+                    <span style="background:#eee; padding:5px 10px; border-radius:5px; font-size:12px;">مربية أطفال</span>
+                    <span style="background:#eee; padding:5px 10px; border-radius:5px; font-size:12px;">تجيد الإنجليزية</span>
+                </div>
+                <button onclick="saveToMemory('MT-7001')" style="background:var(--secondary); border:none; color:white; padding:8px 15px; border-radius:5px; cursor:pointer;">حفظ في الذاكرة</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-section">
+        <h2><i class="fas fa-user-circle"></i> إنشاء حساب عميل جديد</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label>الاسم الكامل:</label>
+                <input type="text" id="custName" placeholder="أدخل اسمك">
+            </div>
+            <div class="form-group">
+                <label>رقم الجوال:</label>
+                <input type="tel" id="custPhone" placeholder="05xxxxxxxx">
+            </div>
+        </div>
+        <button onclick="registerClient()" style="background:var(--primary); color:white; border:none; padding:15px 30px; border-radius:10px; width:100%; cursor:pointer;">تسجيل البيانات في الذاكرة</button>
+    </div>
+</div>
+
+<div class="customer-service" onclick="window.location.href='https://wa.me/+25191092232'">
+    <i class="fas fa-headset"></i>
+</div>
+
+<script>
+    // فتح وإغلاق القائمة الجانبية
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    // محرك البحث
+    function filterWorkers() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('worker-card');
+        for (let card of cards) {
+            let text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? "block" : "none";
+        }
+    }
+
+    // ذاكرة التخزين (Local Storage)
+    function saveToMemory(id) {
+        localStorage.setItem('last_viewed_worker', id);
+        alert('تم حفظ العاملة ' + id + ' في ذاكرة المتصفح بنجاح!');
+    }
+
+    function registerClient() {
+        let name = document.getElementById('custName').value;
+        let phone = document.getElementById('custPhone').value;
+        if(name && phone) {
+            localStorage.setItem('client_name', name);
+            localStorage.setItem('client_phone', phone);
+            alert('أهلاً بك يا ' + name + '، تم إنشاء ملفك بنجاح.');
+        } else {
+            alert('يرجى تعبئة جميع الخانات');
+        }
+    }
+</script>
+
+</body>
+</html>
